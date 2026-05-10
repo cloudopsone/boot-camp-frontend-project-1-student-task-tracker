@@ -18,8 +18,11 @@ interface Board {
   updatedAt?: string;
 }
 
+const DEFAULT_API_BASE_URL =
+  'https://boot-camp-backend-project-1-student-task-tracker-production.up.railway.app/api';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL,
 });
 
 // Task endpoints

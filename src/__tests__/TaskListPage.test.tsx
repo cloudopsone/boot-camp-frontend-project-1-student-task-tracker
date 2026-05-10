@@ -12,7 +12,7 @@ describe('BoardPage', () => {
   });
 
   it('renders board list heading', async () => {
-    api.getBoards.mockResolvedValue({
+    (api.getBoards as any).mockResolvedValue({
       data: [
         { id: 1, name: 'Board 1' },
       ],
@@ -30,7 +30,7 @@ describe('BoardPage', () => {
   });
 
   it('shows create button', async () => {
-    api.getBoards.mockResolvedValue({ data: [] });
+    (api.getBoards as any).mockResolvedValue({ data: [] });
     
     render(
       <BrowserRouter>
@@ -44,7 +44,7 @@ describe('BoardPage', () => {
   });
 
   it('renders board cards with view action', async () => {
-    api.getBoards.mockResolvedValue({
+    (api.getBoards as any).mockResolvedValue({
       data: [
         { id: 1, name: 'Sprint 1' },
       ],

@@ -20,8 +20,8 @@ describe('BoardDetailPage', () => {
   });
 
   it('renders board heading and in-board task form', async () => {
-    api.getBoard.mockResolvedValue({ data: { id: 1, name: 'Sprint 1' } });
-    api.getTasksByBoard.mockResolvedValue({ data: [] });
+    (api.getBoard as any).mockResolvedValue({ data: { id: 1, name: 'Sprint 1' } });
+    (api.getTasksByBoard as any).mockResolvedValue({ data: [] });
 
     render(
       <BrowserRouter>
@@ -36,8 +36,8 @@ describe('BoardDetailPage', () => {
   });
 
   it('shows tasks that belong to the board', async () => {
-    api.getBoard.mockResolvedValue({ data: { id: 1, name: 'Sprint 1' } });
-    api.getTasksByBoard.mockResolvedValue({
+    (api.getBoard as any).mockResolvedValue({ data: { id: 1, name: 'Sprint 1' } });
+    (api.getTasksByBoard as any).mockResolvedValue({
       data: [{ id: 1, title: 'Task A', description: 'In board', status: 'OPEN' }],
     });
 

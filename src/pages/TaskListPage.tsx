@@ -2,10 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { getTasks, deleteTask } from '../services/api';
 import { Link } from 'react-router-dom';
 
+interface Task {
+  id: number;
+  title: string;
+  status: string;
+  dueDate?: string;
+}
+
 function TaskListPage() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
@@ -32,7 +39,7 @@ function TaskListPage() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number) => {
     if (window.confirm('Delete this task?')) {
       try {
         await deleteTask(id);

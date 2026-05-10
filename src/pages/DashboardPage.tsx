@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { getBoards, getTasksByBoard } from '../services/api';
 
+interface Stats {
+  boards: number;
+  tasks: number;
+  open: number;
+  inProgress: number;
+  done: number;
+}
+
 function DashboardPage() {
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<Stats>({
     boards: 0,
     tasks: 0,
     open: 0,
     inProgress: 0,
     done: 0,
   });
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

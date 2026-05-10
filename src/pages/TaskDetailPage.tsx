@@ -2,10 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getTask } from '../services/api';
 
+interface Task {
+  id: number;
+  title: string;
+  description?: string;
+  status: string;
+  boardId: number;
+  dueDate?: string;
+  boardName?: string;
+  createdByName?: string;
+  createdAt?: string;
+}
+
 function TaskDetailPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [task, setTask] = useState(null);
+  const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,7 +26,7 @@ function TaskDetailPage() {
 
   const fetchTask = async () => {
     try {
-      const response = await getTask(id);
+      const response = await getTask(Number(id));
       setTask(response.data);
     } catch (err) {
       console.error('Failed to load task:', err);
@@ -58,7 +70,7 @@ function TaskDetailPage() {
 
       <div style={{ marginBottom: '15px' }}>
         <label style={{ fontWeight: 'bold' }}>Created At: </label>
-        <span>{new Date(task.createdAt).toLocaleString()}</span>
+        <span>{task.createdAt && new Date(task.createdAt).toLocaleString()}</span>
       </div>
 
       <div style={{ display: 'flex', gap: '10px' }}>

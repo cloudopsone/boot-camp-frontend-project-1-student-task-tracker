@@ -2,10 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { getBoards, deleteBoard, createBoard } from '../services/api';
 import { Link } from 'react-router-dom';
 
+interface Board {
+  id: number;
+  name: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 function BoardPage() {
-  const [boards, setBoards] = useState([]);
+  const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [newBoardName, setNewBoardName] = useState('');
   const [showForm, setShowForm] = useState(false);
 
@@ -27,7 +35,7 @@ function BoardPage() {
     }
   };
 
-  const handleCreateBoard = async (e) => {
+  const handleCreateBoard = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newBoardName.trim()) {
       setError('Board name cannot be empty');
@@ -46,7 +54,7 @@ function BoardPage() {
     }
   };
 
-  const handleDeleteBoard = async (id) => {
+  const handleDeleteBoard = async (id: number) => {
     if (window.confirm('Delete this board?')) {
       try {
         await deleteBoard(id);

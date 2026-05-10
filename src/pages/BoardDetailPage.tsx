@@ -8,16 +8,38 @@ import {
   deleteTask,
 } from '../services/api';
 
+interface Board {
+  id: number;
+  name: string;
+  description?: string;
+}
+
+interface Task {
+  id: number;
+  title: string;
+  description?: string;
+  status: string;
+  boardId: number;
+  dueDate?: string;
+}
+
+interface FormData {
+  title: string;
+  description: string;
+  status: string;
+  dueDate: string;
+}
+
 function BoardDetailPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [board, setBoard] = useState(null);
-  const [tasks, setTasks] = useState([]);
+  const [board, setBoard] = useState<Board | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [formError, setFormError] = useState(null);
-  const [editingTaskId, setEditingTaskId] = useState(null);
-  const [formData, setFormData] = useState({
+  const [error, setError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
     status: 'OPEN',
@@ -32,8 +54,8 @@ function BoardDetailPage() {
     try {
       setLoading(true);
       const [boardResponse, tasksResponse] = await Promise.all([
-        getBoard(id),
-        getTasksByBoard(id),
+        getBoard(Number(id)),
+        getTasksByBoard(Number(id)),
       ]);
       setBoard(boardResponse.data);
       setTasks(tasksResponse.data);
@@ -46,7 +68,7 @@ function BoardDetailPage() {
     }
   };
 
-  const handleDeleteTask = async (taskId) => {
+  const handleDeleteTask = async (taskId: number) => {
     if (window.confirm('Delete this task?')) {
       try {
         await deleteTask(taskId);
@@ -69,7 +91,7 @@ function BoardDetailPage() {
     });
   };
 
-  const handleEditTask = (task) => {
+  const handleEditTask = (task: Task) => {
     setEditingTaskId(task.id);
     setFormError(null);
     setFormData({
@@ -80,7 +102,7 @@ function BoardDetailPage() {
     });
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     setFormError(null);
     setFormData((prev) => ({
@@ -89,7 +111,7 @@ function BoardDetailPage() {
     }));
   };
 
-  const handleSaveTask = async (event) => {
+  const handleSaveTask = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const title = formData.title.trim();
@@ -123,7 +145,7 @@ function BoardDetailPage() {
         setTasks((prev) => [...prev, response.data]);
       }
       resetForm();
-    } catch (err) {
+    } catch (err: any) {
       const backendMessage =
         err?.response?.data?.errors?.title ||
         err?.response?.data?.message ||
@@ -136,7 +158,7 @@ function BoardDetailPage() {
   if (loading) return <div>Loading...</div>;
   if (!board) return <div>Board not found</div>;
 
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     OPEN: '#ffc107',
     IN_PROGRESS: '#0dcaf0',
     DONE: '#198754',

@@ -11,7 +11,7 @@ describe('DashboardPage', () => {
   });
 
   it('renders dashboard heading', async () => {
-    api.getBoards.mockResolvedValue({ data: [] });
+    (api.getBoards as any).mockResolvedValue({ data: [] });
     
     render(<DashboardPage />);
     
@@ -21,13 +21,13 @@ describe('DashboardPage', () => {
   });
 
   it('displays board and task statistics', async () => {
-    api.getBoards.mockResolvedValue({
+    (api.getBoards as any).mockResolvedValue({
       data: [
         { id: 1, name: 'Board 1' },
         { id: 2, name: 'Board 2' },
       ],
     });
-    api.getTasksByBoard
+    (api.getTasksByBoard as any)
       .mockResolvedValueOnce({
         data: [
           { id: 1, status: 'OPEN' },

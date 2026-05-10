@@ -2,17 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getTask, createTask, updateTask } from '../services/api';
 
+interface FormData {
+  title: string;
+  description: string;
+  status: string;
+  dueDate: string;
+  boardId: number;
+}
+
+interface Errors {
+  [key: string]: string;
+}
+
 function TaskFormPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
     status: 'OPEN',
     dueDate: '',
     boardId: 1,
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Errors>({});
   const [loading, setLoading] = useState(!!id);
   const [submitting, setSubmitting] = useState(false);
 
@@ -24,7 +36,7 @@ function TaskFormPage() {
 
   const fetchTask = async () => {
     try {
-      const response = await getTask(id);
+      const response = await getTask(Number(id));
       setFormData({
         title: response.data.title,
         description: response.data.description || '',
@@ -39,11 +51,11 @@ function TaskFormPage() {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === 'boardId' ? Number(value) : value,
     }));
     // Clear error for this field
     if (errors[name]) {
@@ -54,8 +66,8 @@ function TaskFormPage() {
     }
   };
 
-  const validateForm = () => {
-    const newErrors = {};
+  const validateForm = (): boolean => {
+    const newErrors: Errors = {};
 
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';
@@ -75,7 +87,7 @@ function TaskFormPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -85,14 +97,14 @@ function TaskFormPage() {
     setSubmitting(true);
     try {
       if (id) {
-        await updateTask(id, formData);
+        await updateTask(Number(id), formData);
         alert('Task updated successfully!');
       } else {
         await createTask(formData);
         alert('Task created successfully!');
       }
       navigate('/tasks');
-    } catch (err) {
+    } catch (err: any) {
       const errorMsg = err.response?.data?.message || 'Failed to save task';
       setErrors((prev) => ({
         ...prev,
